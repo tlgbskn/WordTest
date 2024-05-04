@@ -1,6 +1,8 @@
 document.getElementById('next').addEventListener('click', nextQuestion);
 let currentQuestionIndex = 0;
 let questions = [];
+let correctCount = 0;  // Doğru cevap sayısını tutar
+let incorrectCount = 0;  // Yanlış cevap sayısını tutar
 
 // JSON dosyasını yükle
 fetch('vocabulary.json')
@@ -25,17 +27,27 @@ function loadQuestion() {
             .join('');
         document.getElementById('options').innerHTML = optionsHtml;
     } else {
-        document.getElementById('quiz-container').innerHTML = "<p>Quiz completed!</p>";
+        document.getElementById('quiz-container').innerHTML = `<p>Quiz completed! You answered ${correctCount} correctly and ${incorrectCount} incorrectly.</p>`;
     }
 }
 
 function selectOption(selected) {
     let correct = questions[currentQuestionIndex].answer === selected;
-    alert(correct ? "Correct!" : "Wrong!");
+    if (correct) {
+        correctCount++;
+        alert("Correct!");
+    } else {
+        incorrectCount++;
+        alert("Wrong!");
+    }
     nextQuestion();
 }
 
 function nextQuestion() {
     currentQuestionIndex++;
-    loadQuestion();
+    if(currentQuestionIndex < questions.length) {
+        loadQuestion();
+    } else {
+        document.getElementById('quiz-container').innerHTML = `<p>Quiz completed! You answered ${correctCount} correctly and ${incorrectCount} incorrectly.</p>`;
+    }
 }
